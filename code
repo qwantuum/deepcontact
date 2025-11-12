@@ -1,0 +1,3152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepContact</title>
+    <meta name="description" content="Социальная сеть DeepContact - общайтесь, делитесь музыкой и находите друзей">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffc107;
+            --primary-dark: #ff8f00;
+            --primary-light: #ffecb3;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-radius: 16px;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --gradient: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+        }
+
+        /* Темы */
+        .theme-blue {
+            --primary-color: #2196f3;
+            --primary-dark: #1976d2;
+            --primary-light: #bbdefb;
+            --gradient: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        }
+
+        .theme-green {
+            --primary-color: #4caf50;
+            --primary-dark: #388e3c;
+            --primary-light: #c8e6c9;
+            --gradient: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+        }
+
+        .theme-red {
+            --primary-color: #f44336;
+            --primary-dark: #d32f2f;
+            --primary-light: #ffcdd2;
+            --gradient: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+        }
+
+        .light-mode {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        /* Auth Screen */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            padding: 20px;
+        }
+
+        .auth-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .auth-logo i {
+            font-size: 32px;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            padding: 14px 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+        }
+
+        .auth-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .auth-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Main App */
+        .app {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Navigation */
+        .desktop-nav {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tabs li {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .nav-tabs a {
+            display: block;
+            padding: 15px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs a.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .nav-tabs a:hover {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            padding: 10px 0;
+        }
+
+        .mobile-nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+        }
+
+        .mobile-nav-tabs a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            min-width: 60px;
+        }
+
+        .mobile-nav-tabs a.active {
+            color: var(--primary-color);
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .mobile-nav-tabs i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 80px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Feed */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .create-post {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .post-input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            resize: none;
+            min-height: 60px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .post-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .post-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .post-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .media-preview {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .media-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-media {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Posts */
+        .post {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            margin-right: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .post-author {
+            font-weight: 600;
+        }
+
+        .post-time {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+        }
+
+        .post-media {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .post-media img, .post-media video {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .post-action:hover {
+            color: var(--primary-color);
+        }
+
+        .post-action.active {
+            color: var(--primary-color);
+        }
+
+        .delete-post {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-post:hover {
+            color: #f44336;
+        }
+
+        /* Channels & Groups */
+        .channels-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .channels-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .channel-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .channel-item:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .channel-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .channel-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .channel-members {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* Music */
+        .music-player {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .player-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .track-cover {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .track-details {
+            flex: 1;
+        }
+
+        .track-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .track-artist {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--gradient);
+            width: 30%;
+            transition: width 0.1s ease;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .volume-bar {
+            flex: 1;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .volume-level {
+            height: 100%;
+            background: var(--gradient);
+            width: 70%;
+        }
+
+        .music-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .music-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.02);
+            position: relative;
+        }
+
+        .music-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .music-item.active {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .music-cover {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .music-details {
+            flex: 1;
+        }
+
+        .music-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .music-artist {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .music-duration {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .delete-music {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-music:hover {
+            color: #f44336;
+        }
+
+        /* Profile */
+        .profile-header {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .profile-banner {
+            width: 100%;
+            height: 200px;
+            border-radius: var(--border-radius);
+            background: var(--gradient);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .profile-banner:hover {
+            opacity: 0.9;
+        }
+
+        .profile-banner-upload {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .profile-banner-upload:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .profile-info-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            margin-top: -50px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            border: 4px solid var(--card-bg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .profile-avatar-upload {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .profile-info {
+            flex: 1;
+            padding-bottom: 10px;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .profile-status {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Other Users */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .user-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .user-card-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .user-card-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-card-status {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* Upload Music */
+        .upload-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .upload-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .file-input {
+            padding: 12px 15px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-input:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 193, 7, 0.05);
+        }
+
+        .upload-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            align-self: flex-start;
+        }
+
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+        }
+
+        /* Theme Settings */
+        .theme-settings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .theme-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: var(--card-bg);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .theme-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary-color);
+        }
+
+        .theme-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+        }
+
+        .theme-yellow .theme-preview {
+            background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+        }
+
+        .theme-blue .theme-preview {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        }
+
+        .theme-green .theme-preview {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+        }
+
+        .theme-red .theme-preview {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+        }
+
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Language Settings */
+        .language-settings {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .language-option {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            background-color: var(--card-bg);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .language-option.active {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .language-option:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Account Settings */
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .settings-section {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .privacy-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .privacy-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .privacy-option input {
+            accent-color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            padding: 20px 0;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .footer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .github-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .github-link:hover {
+            color: var(--primary-light);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .profile-info-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-top: -80px;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .player-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .control-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .theme-option {
+                min-width: calc(50% - 15px);
+            }
+
+            .auth-card {
+                padding: 30px 20px;
+            }
+
+            .channels-list, .users-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .theme-option {
+                min-width: 100%;
+            }
+            
+            .channels-list, .users-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-color);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        .error-message {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            border-left: 4px solid #f44336;
+        }
+
+        /* Success Message */
+        .success-message {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            border-left: 4px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Screen -->
+    <div class="auth-container" id="auth-screen">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-brain"></i>
+                    <span>DeepContact</span>
+                </div>
+                <p class="auth-subtitle" id="auth-subtitle">Войдите в свой аккаунт</p>
+            </div>
+            <form class="auth-form" id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Логин или email</label>
+                    <input type="text" class="form-input" placeholder="Введите логин или email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" class="form-input" placeholder="Введите пароль" required>
+                </div>
+                <button type="submit" class="auth-button" id="login-button">
+                    <span id="login-button-text">Войти</span>
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Нет аккаунта? <a class="auth-link" id="show-register">Зарегистрироваться</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div class="auth-container" id="register-screen" style="display: none;">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-brain"></i>
+                    <span>DeepContact</span>
+                </div>
+                <p class="auth-subtitle">Создайте новый аккаунт</p>
+            </div>
+            <form class="auth-form" id="register-form">
+                <div class="form-group">
+                    <label class="form-label">Имя пользователя</label>
+                    <input type="text" class="form-input" placeholder="Введите имя пользователя" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="Введите email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" class="form-input" placeholder="Введите пароль" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Подтвердите пароль</label>
+                    <input type="password" class="form-input" placeholder="Повторите пароль" required>
+                </div>
+                <button type="submit" class="auth-button" id="register-button">
+                    <span id="register-button-text">Зарегистрироваться</span>
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Уже есть аккаунт? <a class="auth-link" id="show-login">Войти</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app" id="app">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-brain"></i>
+                        <span>DeepContact</span>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar">К</div>
+                        <span id="username-display">квантум</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <nav class="desktop-nav">
+                <ul class="nav-tabs">
+                    <li><a href="#" class="nav-link active" data-tab="feed"><i class="fas fa-newspaper"></i> Лента</a></li>
+                    <li><a href="#" class="nav-link" data-tab="channels"><i class="fas fa-users"></i> Каналы</a></li>
+                    <li><a href="#" class="nav-link" data-tab="music"><i class="fas fa-music"></i> Музыка</a></li>
+                    <li><a href="#" class="nav-link" data-tab="users"><i class="fas fa-user-friends"></i> Люди</a></li>
+                    <li><a href="#" class="nav-link" data-tab="profile"><i class="fas fa-user"></i> Профиль</a></li>
+                    <li><a href="#" class="nav-link" data-tab="settings"><i class="fas fa-cog"></i> Настройки</a></li>
+                </ul>
+            </nav>
+
+            <main class="main-content">
+                <!-- Feed Tab -->
+                <div id="feed" class="tab-content active">
+                    <div class="feed">
+                        <div class="create-post">
+                            <div class="post-avatar" id="feed-avatar">К</div>
+                            <div style="flex: 1;">
+                                <textarea class="post-input" placeholder="Что у вас нового?" id="post-text"></textarea>
+                                <div class="media-preview" id="media-preview"></div>
+                                <div class="post-actions">
+                                    <div>
+                                        <button class="post-button" id="add-photo"><i class="fas fa-image"></i> Фото</button>
+                                        <button class="post-button" id="add-video"><i class="fas fa-video"></i> Видео</button>
+                                    </div>
+                                    <button class="post-button" id="publish-post">Опубликовать</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="posts-container">
+                            <!-- Посты будут добавляться здесь -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Channels Tab -->
+                <div id="channels" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Каналы и группы</h2>
+                        </div>
+                        <div class="channels-container">
+                            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">
+                                Здесь будут отображаться ваши каналы и группы. Пока что у вас нет подписок.
+                            </p>
+                            <div class="channels-list">
+                                <div class="channel-item">
+                                    <div class="channel-icon">
+                                        <i class="fas fa-rocket"></i>
+                                    </div>
+                                    <div class="channel-name">Технологии</div>
+                                    <div class="channel-members">12.5K участников</div>
+                                </div>
+                                <div class="channel-item">
+                                    <div class="channel-icon">
+                                        <i class="fas fa-music"></i>
+                                    </div>
+                                    <div class="channel-name">Музыка</div>
+                                    <div class="channel-members">8.7K участников</div>
+                                </div>
+                                <div class="channel-item">
+                                    <div class="channel-icon">
+                                        <i class="fas fa-gamepad"></i>
+                                    </div>
+                                    <div class="channel-name">Игры</div>
+                                    <div class="channel-members">15.2K участников</div>
+                                </div>
+                                <div class="channel-item">
+                                    <div class="channel-icon">
+                                        <i class="fas fa-film"></i>
+                                    </div>
+                                    <div class="channel-name">Кино</div>
+                                    <div class="channel-members">9.3K участников</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Music Tab -->
+                <div id="music" class="tab-content">
+                    <div class="music-player">
+                        <div class="player-controls">
+                            <div class="track-info">
+                                <div class="track-cover">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <div class="track-details">
+                                    <div class="track-title" id="current-track-title">Электронная композиция</div>
+                                    <div class="track-artist" id="current-track-artist">Quantum Beats</div>
+                                </div>
+                            </div>
+                            <div class="control-buttons">
+                                <button class="control-btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                                <button class="play-btn" id="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
+                                <button class="control-btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                            </div>
+                        </div>
+                        <div class="progress-bar" id="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                        <div class="time-info">
+                            <span id="current-time">0:00</span>
+                            <span id="total-time">0:00</span>
+                        </div>
+                        <div class="volume-control">
+                            <i class="fas fa-volume-up"></i>
+                            <div class="volume-bar" id="volume-bar">
+                                <div class="volume-level" id="volume-level"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Моя музыка</h2>
+                        </div>
+                        <div class="music-list" id="music-list">
+                            <!-- Music items will be added dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="upload-container">
+                        <h3 class="upload-title">Загрузить свой трек</h3>
+                        <form class="upload-form" id="upload-form">
+                            <div class="form-group">
+                                <label class="form-label">Название трека</label>
+                                <input type="text" class="form-input" id="track-title" placeholder="Введите название" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Исполнитель</label>
+                                <input type="text" class="form-input" id="track-artist" placeholder="Введите имя исполнителя" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Аудиофайл</label>
+                                <input type="file" class="form-input file-input" id="track-file" accept="audio/*" required>
+                            </div>
+                            <button type="submit" class="upload-button" id="upload-music-button">
+                                <span id="upload-button-text">Загрузить</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Users Tab -->
+                <div id="users" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Люди</h2>
+                        </div>
+                        <div class="users-grid">
+                            <div class="user-card" data-user="alex">
+                                <div class="user-card-avatar">А</div>
+                                <div class="user-card-name">Алексей</div>
+                                <div class="user-card-status">Онлайн</div>
+                            </div>
+                            <div class="user-card" data-user="maria">
+                                <div class="user-card-avatar">М</div>
+                                <div class="user-card-name">Мария</div>
+                                <div class="user-card-status">Был(a) 2 часа назад</div>
+                            </div>
+                            <div class="user-card" data-user="dmitry">
+                                <div class="user-card-avatar">Д</div>
+                                <div class="user-card-name">Дмитрий</div>
+                                <div class="user-card-status">Онлайн</div>
+                            </div>
+                            <div class="user-card" data-user="anna">
+                                <div class="user-card-avatar">А</div>
+                                <div class="user-card-name">Анна</div>
+                                <div class="user-card-status">Был(a) вчера</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div id="profile" class="tab-content">
+                    <div class="profile-header">
+                        <div class="profile-banner" id="profile-banner">
+                            <button class="profile-banner-upload" id="banner-upload-btn">
+                                <i class="fas fa-camera"></i> Сменить баннер
+                            </button>
+                        </div>
+                        <div class="profile-info-container">
+                            <div class="profile-avatar" id="profile-avatar">
+                                К
+                                <button class="profile-avatar-upload" id="avatar-upload-btn">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <div class="profile-info">
+                                <h1 class="profile-name" id="profile-name">квантум</h1>
+                                <p class="profile-status">Онлайн</p>
+                                <div class="profile-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="posts-count">0</div>
+                                        <div class="stat-label">Постов</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">0</div>
+                                        <div class="stat-label">Подписчиков</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Мои посты</h2>
+                        </div>
+                        <div id="profile-posts-container">
+                            <!-- Посты пользователя будут отображаться здесь -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settings" class="tab-content">
+                    <div class="settings-form">
+                        <div class="settings-section">
+                            <h3 class="section-title">Настройки аккаунта</h3>
+                            <div class="form-group">
+                                <label class="form-label">Имя пользователя</label>
+                                <input type="text" class="form-input" id="settings-username" value="квантум">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Новый пароль</label>
+                                <input type="password" class="form-input" id="new-password" placeholder="Введите новый пароль">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Подтвердите новый пароль</label>
+                                <input type="password" class="form-input" id="confirm-password" placeholder="Повторите новый пароль">
+                            </div>
+                            <button class="auth-button" id="save-settings">
+                                <span id="save-settings-text">Сохранить изменения</span>
+                            </button>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3 class="section-title">Язык</h3>
+                            <div class="language-settings">
+                                <div class="language-option active" data-lang="ru">
+                                    <span>Русский</span>
+                                </div>
+                                <div class="language-option" data-lang="en">
+                                    <span>English</span>
+                                </div>
+                                <div class="language-option" data-lang="be">
+                                    <span>Беларуская</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3 class="section-title">Настройки приватности</h3>
+                            <div class="privacy-options">
+                                <label class="privacy-option">
+                                    <input type="checkbox" checked>
+                                    <span>Показывать профиль в поиске</span>
+                                </label>
+                                <label class="privacy-option">
+                                    <input type="checkbox" checked>
+                                    <span>Разрешить отправку сообщений</span>
+                                </label>
+                                <label class="privacy-option">
+                                    <input type="checkbox">
+                                    <span>Закрытый профиль</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3 class="section-title">Настройки темы</h3>
+                            
+                            <div class="mode-toggle">
+                                <span class="toggle-label">Темный режим</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="mode-toggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="theme-settings">
+                                <div class="theme-option theme-yellow active" data-theme="default">
+                                    <div class="theme-preview"></div>
+                                    <div>Желтая</div>
+                                </div>
+                                <div class="theme-option theme-blue" data-theme="blue">
+                                    <div class="theme-preview"></div>
+                                    <div>Синяя</div>
+                                </div>
+                                <div class="theme-option theme-green" data-theme="green">
+                                    <div class="theme-preview"></div>
+                                    <div>Зеленая</div>
+                                </div>
+                                <div class="theme-option theme-red" data-theme="red">
+                                    <div class="theme-preview"></div>
+                                    <div>Красная</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav class="mobile-nav">
+            <ul class="mobile-nav-tabs">
+                <li><a href="#" class="mobile-nav-link active" data-tab="feed"><i class="fas fa-newspaper"></i> Лента</a></li>
+                <li><a href="#" class="mobile-nav-link" data-tab="channels"><i class="fas fa-users"></i> Каналы</a></li>
+                <li><a href="#" class="mobile-nav-link" data-tab="music"><i class="fas fa-music"></i> Музыка</a></li>
+                <li><a href="#" class="mobile-nav-link" data-tab="users"><i class="fas fa-user-friends"></i> Люди</a></li>
+                <li><a href="#" class="mobile-nav-link" data-tab="profile"><i class="fas fa-user"></i> Профиль</a></li>
+            </ul>
+        </nav>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-info">
+                        <span id="datetime">Загрузка времени...</span>
+                        <span>© 2025 DeepContact</span>
+                    </div>
+                    <a href="https://github.com/qwantuum/deepcontact" class="github-link" target="_blank">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Other User Profile -->
+    <div id="other-user-profile" class="tab-content" style="display: none;">
+        <div class="profile-header">
+            <div class="profile-banner" id="other-user-banner" style="background: var(--gradient);"></div>
+            <div class="profile-info-container">
+                <div class="profile-avatar" id="other-user-avatar"></div>
+                <div class="profile-info">
+                    <h1 class="profile-name" id="other-user-name"></h1>
+                    <p class="profile-status" id="other-user-status"></p>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="other-user-posts">0</div>
+                            <div class="stat-label">Постов</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="other-user-followers">0</div>
+                            <div class="stat-label">Подписчиков</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Посты пользователя</h2>
+            </div>
+            <div id="other-user-posts-container">
+                <!-- Посты другого пользователя будут отображаться здесь -->
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-player" style="display: none;"></audio>
+
+    <script>
+        // User authentication state
+        let isLoggedIn = false;
+        let currentUser = {
+            username: 'квантум',
+            avatar: 'К',
+            avatarImage: null,
+            bannerImage: null
+        };
+
+        // Other users data
+        const otherUsers = {
+            'alex': {
+                username: 'Алексей',
+                avatar: 'А',
+                status: 'Онлайн',
+                posts: [
+                    {
+                        id: 101,
+                        text: 'Привет всем! Сегодня отличный день для программирования.',
+                        time: '2 часа назад',
+                        likes: 5,
+                        comments: 2,
+                        shares: 1,
+                        liked: false,
+                        media: []
+                    }
+                ]
+            },
+            'maria': {
+                username: 'Мария',
+                avatar: 'М',
+                status: 'Был(a) 2 часа назад',
+                posts: [
+                    {
+                        id: 102,
+                        text: 'Люблю слушать музыку во время работы. Какие у вас любимые треки?',
+                        time: '5 часов назад',
+                        likes: 8,
+                        comments: 3,
+                        shares: 0,
+                        liked: false,
+                        media: []
+                    }
+                ]
+            },
+            'dmitry': {
+                username: 'Дмитрий',
+                avatar: 'Д',
+                status: 'Онлайн',
+                posts: [
+                    {
+                        id: 103,
+                        text: 'Только что закончил новый проект. Очень доволен результатом!',
+                        time: 'Вчера',
+                        likes: 12,
+                        comments: 5,
+                        shares: 2,
+                        liked: false,
+                        media: []
+                    }
+                ]
+            },
+            'anna': {
+                username: 'Анна',
+                avatar: 'А',
+                status: 'Был(a) вчера',
+                posts: [
+                    {
+                        id: 104,
+                        text: 'Кто планирует поездку на выходные? Поделитесь идеями!',
+                        time: '2 дня назад',
+                        likes: 7,
+                        comments: 4,
+                        shares: 1,
+                        liked: false,
+                        media: []
+                    }
+                ]
+            }
+        };
+
+        // Music data
+        const musicTracks = [
+            {
+                id: 1,
+                title: "Электронная композиция",
+                artist: "Quantum Beats",
+                duration: "3:45",
+                src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_ec9bdb0c6c.mp3?filename=ambient-piano-amp-strings-120117.mp3"
+            },
+            {
+                id: 2,
+                title: "Мечты о будущем",
+                artist: "Neural Network",
+                duration: "4:20",
+                src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_ec9bdb0c6c.mp3?filename=ambient-piano-amp-strings-120117.mp3"
+            },
+            {
+                id: 3,
+                title: "Космическое путешествие",
+                artist: "Deep Space",
+                duration: "5:15",
+                src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_ec9bdb0c6c.mp3?filename=ambient-piano-amp-strings-120117.mp3"
+            }
+        ];
+
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        const audioPlayer = document.getElementById('audio-player');
+        let userTracks = [];
+        let posts = [];
+        let currentMedia = [];
+        let currentLanguage = 'ru';
+        let currentViewingUser = null;
+
+        // Initialize the application
+        function initApp() {
+            // Check if user is logged in (in a real app, this would be done with a server)
+            const savedUser = localStorage.getItem('deepContactUser');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    isLoggedIn = true;
+                    showApp();
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                    localStorage.removeItem('deepContactUser');
+                }
+            } else {
+                // Show auth screen if not logged in
+                document.getElementById('auth-screen').style.display = 'flex';
+            }
+
+            // Load user tracks from localStorage
+            const savedTracks = localStorage.getItem('userTracks');
+            if (savedTracks) {
+                try {
+                    userTracks = JSON.parse(savedTracks);
+                if (!Array.isArray(userTracks)) userTracks = [];
+                console.log('Loaded user tracks:', userTracks.length);
+                } catch (e) {
+                    console.error('Error parsing user tracks:', e);
+                    userTracks = [];
+                }
+            }
+
+            // Load posts from localStorage
+            const savedPosts = localStorage.getItem('userPosts');
+            if (savedPosts) {
+                try {
+                    posts = JSON.parse(savedPosts);
+                    if (!Array.isArray(posts)) posts = [];
+                    renderPosts();
+                    renderProfilePosts();
+                } catch (e) {
+                    console.error('Error parsing posts:', e);
+                    posts = [];
+                }
+            }
+
+            // Initialize music player
+            initMusicPlayer();
+            
+            // Initialize other components
+            initEventListeners();
+            updateDateTime();
+
+            // Load language preference
+            const savedLang = localStorage.getItem('deepContactLanguage');
+            if (savedLang) {
+                currentLanguage = savedLang;
+                changeLanguage(currentLanguage);
+            }
+
+            // Load theme preference
+            const savedTheme = localStorage.getItem('deepContactTheme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            }
+
+            // Load mode preference
+            const savedMode = localStorage.getItem('deepContactMode');
+            if (savedMode === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('mode-toggle').checked = false;
+            }
+
+            console.log('DeepContact initialized successfully');
+        }
+
+        // Apply theme
+        function applyTheme(theme) {
+            // Remove all theme classes from body
+            document.body.classList.remove('theme-blue', 'theme-green', 'theme-red');
+            
+            // Add selected theme class
+            if (theme !== 'default') {
+                document.body.classList.add(`theme-${theme}`);
+            }
+            
+            // Update active theme option
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-theme') === theme) {
+                    option.classList.add('active');
+                }
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('deepContactTheme', theme);
+        }
+
+        // Change language
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('deepContactLanguage', lang);
+            
+            // Update language options
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-lang') === lang) {
+                    option.classList.add('active');
+                }
+            });
+        }
+
+        // Show main app
+        function showApp() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('register-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            updateUIForUser();
+        }
+
+        // Update UI for logged in user
+        function updateUIForUser() {
+            document.getElementById('username-display').textContent = currentUser.username;
+            document.getElementById('user-avatar').textContent = currentUser.avatar;
+            
+            // Update avatar image if exists
+            if (currentUser.avatarImage) {
+                document.getElementById('user-avatar').style.backgroundImage = `url(${currentUser.avatarImage})`;
+                document.getElementById('user-avatar').textContent = '';
+            }
+            
+            document.getElementById('feed-avatar').textContent = currentUser.avatar;
+            
+            // Update feed avatar image if exists
+            if (currentUser.avatarImage) {
+                document.getElementById('feed-avatar').style.backgroundImage = `url(${currentUser.avatarImage})`;
+                document.getElementById('feed-avatar').textContent = '';
+            }
+            
+            document.getElementById('profile-name').textContent = currentUser.username;
+            document.getElementById('profile-avatar').textContent = currentUser.avatar;
+            
+            // Update profile avatar image if exists
+            if (currentUser.avatarImage) {
+                document.getElementById('profile-avatar').style.backgroundImage = `url(${currentUser.avatarImage})`;
+                document.getElementById('profile-avatar').textContent = '';
+            }
+            
+            document.getElementById('settings-username').value = currentUser.username;
+            
+            // Update banner if exists
+            if (currentUser.bannerImage) {
+                document.getElementById('profile-banner').style.backgroundImage = `url(${currentUser.bannerImage})`;
+                document.getElementById('profile-banner').style.backgroundSize = 'cover';
+                document.getElementById('profile-banner').style.backgroundPosition = 'center';
+            }
+            
+            // Update posts count
+            document.getElementById('posts-count').textContent = posts.filter(post => post.author === currentUser.username).length;
+        }
+
+        // Initialize music player
+        function initMusicPlayer() {
+            // Populate music list
+            const musicList = document.getElementById('music-list');
+            musicList.innerHTML = '';
+            
+            // Add default tracks
+            musicTracks.forEach((track, index) => {
+                const musicItem = document.createElement('div');
+                musicItem.className = 'music-item' + (index === currentTrackIndex ? ' active' : '');
+                musicItem.innerHTML = `
+                    <div class="music-cover">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="music-details">
+                        <div class="music-title">${track.title}</div>
+                        <div class="music-artist">${track.artist}</div>
+                    </div>
+                    <div class="music-duration">${track.duration}</div>
+                `;
+                musicItem.addEventListener('click', () => playTrack(index));
+                musicList.appendChild(musicItem);
+            });
+            
+            // Add user tracks
+            userTracks.forEach((track, index) => {
+                const musicItem = document.createElement('div');
+                musicItem.className = 'music-item';
+                musicItem.innerHTML = `
+                    <div class="music-cover">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="music-details">
+                        <div class="music-title">${track.title}</div>
+                        <div class="music-artist">${track.artist}</div>
+                    </div>
+                    <div class="music-duration">${track.duration}</div>
+                    <button class="delete-music" data-index="${index}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                musicItem.addEventListener('click', () => playUserTrack(index));
+                musicList.appendChild(musicItem);
+            });
+
+            // Set first track as current
+            if (musicTracks.length > 0) {
+                updateCurrentTrackInfo();
+            }
+        }
+
+        // Play a track from the default list
+        function playTrack(index) {
+            if (index < 0 || index >= musicTracks.length) return;
+            
+            currentTrackIndex = index;
+            const track = musicTracks[index];
+            
+            // Check if audio source is accessible
+            const testAudio = new Audio();
+            testAudio.src = track.src;
+            testAudio.onerror = () => {
+                console.error('Failed to load audio:', track.src);
+                showMessage('Не удалось загрузить аудиофайл', 'error');
+                return;
+            };
+            
+            audioPlayer.src = track.src;
+            audioPlayer.play().catch(e => {
+                console.error('Error playing audio:', e);
+                showMessage('Ошибка воспроизведения аудио', 'error');
+            });
+            
+            isPlaying = true;
+            document.getElementById('play-icon').classList.remove('fa-play');
+            document.getElementById('play-icon').classList.add('fa-pause');
+            
+            // Update active track in list
+            document.querySelectorAll('.music-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.music-item')[index].classList.add('active');
+            
+            updateCurrentTrackInfo();
+        }
+
+        // Play a user-uploaded track
+        function playUserTrack(index) {
+            if (index < 0 || index >= userTracks.length) return;
+            
+            const track = userTracks[index];
+            audioPlayer.src = track.src;
+            audioPlayer.play().catch(e => {
+                console.error('Error playing audio:', e);
+                showMessage('Ошибка воспроизведения аудио', 'error');
+            });
+            
+            isPlaying = true;
+            document.getElementById('play-icon').classList.remove('fa-play');
+            document.getElementById('play-icon').classList.add('fa-pause');
+            
+            // Update current track info
+            document.getElementById('current-track-title').textContent = track.title;
+            document.getElementById('current-track-artist').textContent = track.artist;
+            
+            // Update active track in list
+            document.querySelectorAll('.music-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.music-item')[musicTracks.length + index].classList.add('active');
+        }
+
+        // Update current track information
+        function updateCurrentTrackInfo() {
+            const track = musicTracks[currentTrackIndex];
+            document.getElementById('current-track-title').textContent = track.title;
+            document.getElementById('current-track-artist').textContent = track.artist;
+        }
+
+        // Render posts
+        function renderPosts() {
+            const postsContainer = document.getElementById('posts-container');
+            if (!postsContainer) return;
+            
+            postsContainer.innerHTML = '';
+            
+            if (posts.length === 0) {
+                postsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">Здесь пока нет постов. Будьте первым, кто поделится чем-то интересным!</p>';
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-author-avatar">${post.authorAvatar}</div>
+                        <div>
+                            <div class="post-author">${post.author}</div>
+                            <div class="post-time">${post.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.text}</div>
+                    ${post.media.length > 0 ? `
+                        <div class="post-media">
+                            ${post.media.map(media => 
+                                media.type === 'image' ? 
+                                `<img src="${media.src}" alt="Post image">` : 
+                                `<video controls><source src="${media.src}" type="video/mp4"></video>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="post-actions">
+                        <div class="post-action ${post.liked ? 'active' : ''}" data-post-id="${post.id}" data-action="like">
+                            <i class="${post.liked ? 'fas' : 'far'} fa-heart"></i>
+                            <span>${post.likes}</span>
+                        </div>
+                        <div class="post-action" data-post-id="${post.id}" data-action="comment">
+                            <i class="far fa-comment"></i>
+                            <span>${post.comments}</span>
+                        </div>
+                        <div class="post-action" data-post-id="${post.id}" data-action="share">
+                            <i class="far fa-share-square"></i>
+                            <span>${post.shares}</span>
+                        </div>
+                    </div>
+                    ${post.author === currentUser.username ? `
+                        <button class="delete-post" data-post-id="${post.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    ` : ''}
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        // Render profile posts
+        function renderProfilePosts() {
+            const profilePostsContainer = document.getElementById('profile-posts-container');
+            if (!profilePostsContainer) return;
+            
+            profilePostsContainer.innerHTML = '';
+            
+            const userPosts = posts.filter(post => post.author === currentUser.username);
+            
+            if (userPosts.length === 0) {
+                profilePostsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">У вас пока нет постов</p>';
+                return;
+            }
+            
+            userPosts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-author-avatar">${post.authorAvatar}</div>
+                        <div>
+                            <div class="post-author">${post.author}</div>
+                            <div class="post-time">${post.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.text}</div>
+                    ${post.media.length > 0 ? `
+                        <div class="post-media">
+                            ${post.media.map(media => 
+                                media.type === 'image' ? 
+                                `<img src="${media.src}" alt="Post image">` : 
+                                `<video controls><source src="${media.src}" type="video/mp4"></video>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="post-actions">
+                        <div class="post-action ${post.liked ? 'active' : ''}" data-post-id="${post.id}" data-action="like">
+                            <i class="${post.liked ? 'fas' : 'far'} fa-heart"></i>
+                            <span>${post.likes}</span>
+                        </div>
+                        <div class="post-action" data-post-id="${post.id}" data-action="comment">
+                            <i class="far fa-comment"></i>
+                            <span>${post.comments}</span>
+                        </div>
+                        <div class="post-action" data-post-id="${post.id}" data-action="share">
+                            <i class="far fa-share-square"></i>
+                            <span>${post.shares}</span>
+                        </div>
+                    </div>
+                    <button class="delete-post" data-post-id="${post.id}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                profilePostsContainer.appendChild(postElement);
+            });
+        }
+
+        // Render other user posts
+        function renderOtherUserPosts(userId) {
+            const otherUserPostsContainer = document.getElementById('other-user-posts-container');
+            if (!otherUserPostsContainer) return;
+            
+            otherUserPostsContainer.innerHTML = '';
+            
+            const user = otherUsers[userId];
+            if (!user || !user.posts || user.posts.length === 0) {
+                otherUserPostsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">У пользователя пока нет постов</p>';
+                return;
+            }
+            
+            user.posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-author-avatar">${user.avatar}</div>
+                        <div>
+                            <div class="post-author">${user.username}</div>
+                            <div class="post-time">${post.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.text}</div>
+                    ${post.media.length > 0 ? `
+                        <div class="post-media">
+                            ${post.media.map(media => 
+                                media.type === 'image' ? 
+                                `<img src="${media.src}" alt="Post image">` : 
+                                `<video controls><source src="${media.src}" type="video/mp4"></video>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="post-actions">
+                        <div class="post-action ${post.liked ? 'active' : ''}" data-post-id="${post.id}" data-action="like" data-user-id="${userId}">
+                            <i class="${post.liked ? 'fas' : 'far'} fa-heart"></i>
+                            <span>${post.likes}</span>
+                        </div>
+                        <div class="post-action" data-post-id="${post.id}" data-action="comment" data-user-id="${userId}">
+                            <i class="far fa-comment"></i>
+                            <span>${post.comments}</span>
+                        </div>
+                        <div class="post-action" data-post-id="${post.id}" data-action="share" data-user-id="${userId}">
+                            <i class="far fa-share-square"></i>
+                            <span>${post.shares}</span>
+                        </div>
+                    </div>
+                `;
+                otherUserPostsContainer.appendChild(postElement);
+            });
+        }
+
+        // Add media to post
+        function addMedia(type) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = type === 'image' ? 'image/*' : 'video/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check file size (max 10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        showMessage('Файл слишком большой. Максимальный размер: 10MB', 'error');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const media = {
+                            type: type,
+                            src: event.target.result
+                        };
+                        currentMedia.push(media);
+                        renderMediaPreview();
+                    };
+                    reader.onerror = function() {
+                        showMessage('Ошибка при чтении файла', 'error');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Render media preview
+        function renderMediaPreview() {
+            const mediaPreview = document.getElementById('media-preview');
+            if (!mediaPreview) return;
+            
+            mediaPreview.innerHTML = '';
+            
+            currentMedia.forEach((media, index) => {
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                mediaItem.innerHTML = `
+                    ${media.type === 'image' ? 
+                        `<img src="${media.src}" alt="Preview">` : 
+                        `<video src="${media.src}"></video>`
+                    }
+                    <button class="remove-media" data-index="${index}">&times;</button>
+                `;
+                mediaPreview.appendChild(mediaItem);
+            });
+
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-media').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    currentMedia.splice(index, 1);
+                    renderMediaPreview();
+                });
+            });
+        }
+
+        // Show other user profile
+        function showOtherUserProfile(userId) {
+            const user = otherUsers[userId];
+            if (!user) return;
+            
+            currentViewingUser = userId;
+            
+            // Update UI
+            document.getElementById('other-user-name').textContent = user.username;
+            document.getElementById('other-user-avatar').textContent = user.avatar;
+            document.getElementById('other-user-status').textContent = user.status;
+            document.getElementById('other-user-posts').textContent = user.posts ? user.posts.length : 0;
+            document.getElementById('other-user-followers').textContent = Math.floor(Math.random() * 100);
+            
+            // Render posts
+            renderOtherUserPosts(userId);
+            
+            // Hide all tabs and show other user profile
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.getElementById('other-user-profile').style.display = 'block';
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+        }
+
+        // Show message to user
+        function showMessage(message, type = 'info') {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.error-message, .success-message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            // Create new message
+            const messageElement = document.createElement('div');
+            messageElement.className = type === 'error' ? 'error-message' : 'success-message';
+            messageElement.textContent = message;
+            
+            // Add to top of main content
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.insertBefore(messageElement, mainContent.firstChild);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (messageElement.parentNode) {
+                        messageElement.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Set button loading state
+        function setButtonLoading(button, isLoading) {
+            const buttonText = button.querySelector('span');
+            if (isLoading) {
+                button.disabled = true;
+                buttonText.innerHTML = '<div class="spinner"></div>Загрузка...';
+            } else {
+                button.disabled = false;
+                // Reset to original text based on button id
+                const buttonId = button.id;
+                if (buttonId === 'login-button') {
+                    buttonText.textContent = 'Войти';
+                } else if (buttonId === 'register-button') {
+                    buttonText.textContent = 'Зарегистрироваться';
+                } else if (buttonId === 'upload-music-button') {
+                    buttonText.textContent = 'Загрузить';
+                } else if (buttonId === 'save-settings') {
+                    buttonText.textContent = 'Сохранить изменения';
+                }
+            }
+        }
+
+        // Initialize event listeners
+        function initEventListeners() {
+            // Login Form
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const loginButton = document.getElementById('login-button');
+                setButtonLoading(loginButton, true);
+                
+                // In a real app, this would validate against a server
+                const username = this.querySelector('input[type="text"]').value;
+                const password = this.querySelector('input[type="password"]').value;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Simple validation
+                    if (username && password) {
+                        currentUser = {
+                            username: username,
+                            avatar: username.charAt(0).toUpperCase(),
+                            avatarImage: null,
+                            bannerImage: null
+                        };
+                        
+                        try {
+                            localStorage.setItem('deepContactUser', JSON.stringify(currentUser));
+                            isLoggedIn = true;
+                            showApp();
+                            showMessage('Успешный вход!', 'success');
+                        } catch (e) {
+                            console.error('Error saving user data:', e);
+                            showMessage('Ошибка при сохранении данных', 'error');
+                        }
+                    } else {
+                        showMessage('Пожалуйста, заполните все поля', 'error');
+                    }
+                    
+                    setButtonLoading(loginButton, false);
+                }, 1000);
+            });
+
+            // Register Form
+            document.getElementById('register-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const registerButton = document.getElementById('register-button');
+                setButtonLoading(registerButton, true);
+                
+                const username = this.querySelectorAll('input[type="text"]')[0].value;
+                const email = this.querySelector('input[type="email"]').value;
+                const password = this.querySelectorAll('input[type="password"]')[0].value;
+                const confirmPassword = this.querySelectorAll('input[type="password"]')[1].value;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Simple validation
+                    if (username && email && password && password === confirmPassword) {
+                        currentUser = {
+                            username: username,
+                            avatar: username.charAt(0).toUpperCase(),
+                            avatarImage: null,
+                            bannerImage: null
+                        };
+                        
+                        try {
+                            localStorage.setItem('deepContactUser', JSON.stringify(currentUser));
+                            isLoggedIn = true;
+                            showApp();
+                            showMessage('Аккаунт успешно создан!', 'success');
+                        } catch (e) {
+                            console.error('Error saving user data:', e);
+                            showMessage('Ошибка при сохранении данных', 'error');
+                        }
+                    } else if (password !== confirmPassword) {
+                        showMessage('Пароли не совпадают!', 'error');
+                    } else {
+                        showMessage('Пожалуйста, заполните все поля', 'error');
+                    }
+                    
+                    setButtonLoading(registerButton, false);
+                }, 1000);
+            });
+
+            // Show Register Form
+            document.getElementById('show-register').addEventListener('click', function() {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('register-screen').style.display = 'flex';
+            });
+
+            // Show Login Form
+            document.getElementById('show-login').addEventListener('click', function() {
+                document.getElementById('register-screen').style.display = 'none';
+                document.getElementById('auth-screen').style.display = 'flex';
+            });
+
+            // Tab Navigation
+            document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // If we're viewing another user's profile, go back to main app
+                    if (document.getElementById('other-user-profile').style.display === 'block') {
+                        document.getElementById('other-user-profile').style.display = 'none';
+                        document.querySelectorAll('.tab-content').forEach(tab => {
+                            tab.style.display = 'none';
+                        });
+                    }
+                    
+                    // Remove active class from all links and tabs
+                    document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        tab.classList.remove('active');
+                        tab.style.display = 'none';
+                    });
+                    
+                    // Add active class to clicked link and corresponding tab
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    const tabElement = document.getElementById(tabId);
+                    if (tabElement) {
+                        tabElement.classList.add('active');
+                        tabElement.style.display = 'block';
+                    }
+                });
+            });
+
+            // Theme Switching
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all theme options
+                    document.querySelectorAll('.theme-option').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                    
+                    const theme = this.getAttribute('data-theme');
+                    applyTheme(theme);
+                });
+            });
+
+            // Language Switching
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                    showMessage(`Язык изменен на ${this.textContent}`, 'success');
+                });
+            });
+
+            // Dark/Light Mode Toggle
+            const modeToggle = document.getElementById('mode-toggle');
+            modeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.classList.remove('light-mode');
+                    localStorage.setItem('deepContactMode', 'dark');
+                } else {
+                    document.body.classList.add('light-mode');
+                    localStorage.setItem('deepContactMode', 'light');
+                }
+            });
+
+            // Music Player Controls
+            document.getElementById('play-btn').addEventListener('click', function() {
+                if (isPlaying) {
+                    audioPlayer.pause();
+                    document.getElementById('play-icon').classList.remove('fa-pause');
+                    document.getElementById('play-icon').classList.add('fa-play');
+                } else {
+                    if (audioPlayer.src) {
+                        audioPlayer.play().catch(e => {
+                            console.error('Error playing audio:', e);
+                            showMessage('Ошибка воспроизведения аудио', 'error');
+                        });
+                    } else if (musicTracks.length > 0) {
+                        playTrack(0);
+                    }
+                    document.getElementById('play-icon').classList.remove('fa-play');
+                    document.getElementById('play-icon').classList.add('fa-pause');
+                }
+                isPlaying = !isPlaying;
+            });
+
+            document.getElementById('prev-btn').addEventListener('click', function() {
+                if (musicTracks.length > 0) {
+                    currentTrackIndex = (currentTrackIndex - 1 + musicTracks.length) % musicTracks.length;
+                    playTrack(currentTrackIndex);
+                }
+            });
+
+            document.getElementById('next-btn').addEventListener('click', function() {
+                if (musicTracks.length > 0) {
+                    currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
+                    playTrack(currentTrackIndex);
+                }
+            });
+
+            // Progress Bar
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const percent = (e.clientX - rect.left) / rect.width;
+                    audioPlayer.currentTime = percent * audioPlayer.duration;
+                });
+            }
+
+            // Volume Control
+            const volumeBar = document.getElementById('volume-bar');
+            if (volumeBar) {
+                volumeBar.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const percent = (e.clientX - rect.left) / rect.width;
+                    audioPlayer.volume = percent;
+                    document.getElementById('volume-level').style.width = `${percent * 100}%`;
+                });
+            }
+
+            // Audio player events
+            audioPlayer.addEventListener('timeupdate', function() {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                const progressElement = document.getElementById('progress');
+                if (progressElement) {
+                    progressElement.style.width = `${progress}%`;
+                }
+                
+                // Update time display
+                const currentTimeElement = document.getElementById('current-time');
+                const totalTimeElement = document.getElementById('total-time');
+                if (currentTimeElement && totalTimeElement) {
+                    currentTimeElement.textContent = formatTime(audioPlayer.currentTime);
+                    totalTimeElement.textContent = formatTime(audioPlayer.duration);
+                }
+            });
+
+            audioPlayer.addEventListener('ended', function() {
+                isPlaying = false;
+                document.getElementById('play-icon').classList.remove('fa-pause');
+                document.getElementById('play-icon').classList.add('fa-play');
+                
+                // Auto-play next track
+                if (musicTracks.length > 0) {
+                    currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
+                    playTrack(currentTrackIndex);
+                }
+            });
+
+            // Upload Form
+            document.getElementById('upload-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const uploadButton = document.getElementById('upload-music-button');
+                setButtonLoading(uploadButton, true);
+                
+                const title = document.getElementById('track-title').value;
+                const artist = document.getElementById('track-artist').value;
+                const fileInput = document.getElementById('track-file');
+                
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    
+                    // Check file size (max 10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        showMessage('Файл слишком большой. Максимальный размер: 10MB', 'error');
+                        setButtonLoading(uploadButton, false);
+                        return;
+                    }
+                    
+                    const url = URL.createObjectURL(file);
+                    
+                    // Create a new track object
+                    const newTrack = {
+                        id: userTracks.length + 1,
+                        title: title,
+                        artist: artist,
+                        duration: '0:00', // In a real app, you would calculate this
+                        src: url
+                    };
+                    
+                    userTracks.push(newTrack);
+                    
+                    try {
+                        localStorage.setItem('userTracks', JSON.stringify(userTracks));
+                        
+                        // Reset form and update music list
+                        this.reset();
+                        initMusicPlayer();
+                        
+                        showMessage('Трек успешно загружен!', 'success');
+                    } catch (e) {
+                        console.error('Error saving track:', e);
+                        showMessage('Ошибка при сохранении трека', 'error');
+                    }
+                } else {
+                    showMessage('Пожалуйста, выберите файл', 'error');
+                }
+                
+                setButtonLoading(uploadButton, false);
+            });
+
+            // Banner Upload
+            document.getElementById('banner-upload-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Check file size (max 5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                            showMessage('Файл слишком большой. Максимальный размер: 5MB', 'error');
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            currentUser.bannerImage = event.target.result;
+                            try {
+                                localStorage.setItem('deepContactUser', JSON.stringify(currentUser));
+                                document.getElementById('profile-banner').style.backgroundImage = `url(${event.target.result})`;
+                                document.getElementById('profile-banner').style.backgroundSize = 'cover';
+                                document.getElementById('profile-banner').style.backgroundPosition = 'center';
+                                showMessage('Баннер успешно обновлен!', 'success');
+                            } catch (e) {
+                                console.error('Error saving banner:', e);
+                                showMessage('Ошибка при сохранении баннера', 'error');
+                            }
+                        };
+                        reader.onerror = function() {
+                            showMessage('Ошибка при чтении файла', 'error');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
+
+            // Avatar Upload
+            document.getElementById('avatar-upload-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Check file size (max 2MB)
+                        if (file.size > 2 * 1024 * 1024) {
+                            showMessage('Файл слишком большой. Максимальный размер: 2MB', 'error');
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            currentUser.avatarImage = event.target.result;
+                            try {
+                                localStorage.setItem('deepContactUser', JSON.stringify(currentUser));
+                                updateUIForUser();
+                                showMessage('Аватар успешно обновлен!', 'success');
+                            } catch (e) {
+                                console.error('Error saving avatar:', e);
+                                showMessage('Ошибка при сохранении аватара', 'error');
+                            }
+                        };
+                        reader.onerror = function() {
+                            showMessage('Ошибка при чтении файла', 'error');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
+
+            // Save Settings
+            document.getElementById('save-settings').addEventListener('click', function() {
+                const saveButton = document.getElementById('save-settings');
+                setButtonLoading(saveButton, true);
+                
+                const newUsername = document.getElementById('settings-username').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    if (newUsername) {
+                        currentUser.username = newUsername;
+                        currentUser.avatar = newUsername.charAt(0).toUpperCase();
+                        try {
+                            localStorage.setItem('deepContactUser', JSON.stringify(currentUser));
+                            updateUIForUser();
+                        } catch (e) {
+                            console.error('Error saving user data:', e);
+                            showMessage('Ошибка при сохранении данных', 'error');
+                        }
+                    }
+                    
+                    if (newPassword && newPassword === confirmPassword) {
+                        // In a real app, this would update the password on the server
+                        showMessage('Пароль успешно изменен!', 'success');
+                        document.getElementById('new-password').value = '';
+                        document.getElementById('confirm-password').value = '';
+                    } else if (newPassword && newPassword !== confirmPassword) {
+                        showMessage('Пароли не совпадают!', 'error');
+                    }
+                    
+                    showMessage('Настройки сохранены!', 'success');
+                    setButtonLoading(saveButton, false);
+                }, 1000);
+            });
+
+            // Publish Post
+            document.getElementById('publish-post').addEventListener('click', function() {
+                const postInput = document.getElementById('post-text');
+                if (postInput.value.trim() !== '' || currentMedia.length > 0) {
+                    const newPost = {
+                        id: Date.now(), // Use timestamp for unique ID
+                        author: currentUser.username,
+                        authorAvatar: currentUser.avatar,
+                        text: postInput.value,
+                        media: [...currentMedia],
+                        time: new Date().toLocaleString('ru-RU', {
+                            day: 'numeric',
+                            month: 'long',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }),
+                        likes: 0,
+                        comments: 0,
+                        shares: 0,
+                        liked: false
+                    };
+                    
+                    posts.unshift(newPost);
+                    
+                    try {
+                        localStorage.setItem('userPosts', JSON.stringify(posts));
+                        renderPosts();
+                        renderProfilePosts();
+                        
+                        // Reset form
+                        postInput.value = '';
+                        currentMedia = [];
+                        const mediaPreview = document.getElementById('media-preview');
+                        if (mediaPreview) {
+                            mediaPreview.innerHTML = '';
+                        }
+                        
+                        // Update posts count
+                        document.getElementById('posts-count').textContent = posts.filter(post => post.author === currentUser.username).length;
+                        
+                        showMessage('Пост опубликован!', 'success');
+                    } catch (e) {
+                        console.error('Error saving post:', e);
+                        showMessage('Ошибка при сохранении поста', 'error');
+                    }
+                } else {
+                    showMessage('Введите текст поста или добавьте медиа!', 'error');
+                }
+            });
+
+            // Add Photo/Video buttons
+            document.getElementById('add-photo').addEventListener('click', function() {
+                addMedia('image');
+            });
+
+            document.getElementById('add-video').addEventListener('click', function() {
+                addMedia('video');
+            });
+
+            // User cards
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-user');
+                    showOtherUserProfile(userId);
+                });
+            });
+
+            // Post actions (like, comment, share)
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.post-action')) {
+                    const actionElement = e.target.closest('.post-action');
+                    const postId = parseInt(actionElement.getAttribute('data-post-id'));
+                    const action = actionElement.getAttribute('data-action');
+                    const userId = actionElement.getAttribute('data-user-id');
+                    
+                    if (action === 'like') {
+                        // Handle like action
+                        if (userId) {
+                            // Like on other user's post
+                            const user = otherUsers[userId];
+                            const post = user.posts.find(p => p.id === postId);
+                            if (post) {
+                                post.liked = !post.liked;
+                                post.likes += post.liked ? 1 : -1;
+                                renderOtherUserPosts(userId);
+                            }
+                        } else {
+                            // Like on own post
+                            const post = posts.find(p => p.id === postId);
+                            if (post) {
+                                post.liked = !post.liked;
+                                post.likes += post.liked ? 1 : -1;
+                                renderPosts();
+                                renderProfilePosts();
+                                try {
+                                    localStorage.setItem('userPosts', JSON.stringify(posts));
+                                } catch (e) {
+                                    console.error('Error saving posts:', e);
+                                }
+                            }
+                        }
+                    } else if (action === 'comment') {
+                        showMessage('Функция комментариев будет реализована в будущем!', 'info');
+                    } else if (action === 'share') {
+                        showMessage('Функция репоста будет реализована в будущем!', 'info');
+                    }
+                }
+            });
+
+            // Delete post
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.delete-post')) {
+                    const deleteButton = e.target.closest('.delete-post');
+                    const postId = parseInt(deleteButton.getAttribute('data-post-id'));
+                    
+                    if (confirm('Вы уверены, что хотите удалить этот пост?')) {
+                        posts = posts.filter(post => post.id !== postId);
+                        try {
+                            localStorage.setItem('userPosts', JSON.stringify(posts));
+                            renderPosts();
+                            renderProfilePosts();
+                            
+                            // Update posts count
+                            document.getElementById('posts-count').textContent = posts.filter(post => post.author === currentUser.username).length;
+                            
+                            showMessage('Пост удален', 'success');
+                        } catch (e) {
+                            console.error('Error deleting post:', e);
+                            showMessage('Ошибка при удалении поста', 'error');
+                        }
+                    }
+                }
+            });
+
+            // Delete music
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.delete-music')) {
+                    const deleteButton = e.target.closest('.delete-music');
+                    const trackIndex = parseInt(deleteButton.getAttribute('data-index'));
+                    
+                    if (confirm('Вы уверены, что хотите удалить этот трек?')) {
+                        userTracks.splice(trackIndex, 1);
+                        try {
+                            localStorage.setItem('userTracks', JSON.stringify(userTracks));
+                            initMusicPlayer();
+                            showMessage('Трек удален', 'success');
+                        } catch (e) {
+                            console.error('Error deleting track:', e);
+                            showMessage('Ошибка при удалении трека', 'error');
+                        }
+                    }
+                }
+            });
+        }
+
+        // Format time for display
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Date and Time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const dateTimeStr = now.toLocaleDateString('ru-RU', options);
+            const datetimeElement = document.getElementById('datetime');
+            if (datetimeElement) {
+                datetimeElement.textContent = dateTimeStr;
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+
+        // Update time every minute
+        setInterval(updateDateTime, 60000);
+    </script>
+</body>
+</html>
