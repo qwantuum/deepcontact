@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О DeepContact - Социальная сеть нового поколения</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffc107;
+            --primary-dark: #ff8f00;
+            --primary-light: #ffecb3;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-radius: 16px;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --gradient: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+        }
+
+        .light-mode {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .auth-button {
+            padding: 8px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .register-btn {
+            background: var(--gradient);
+            border: none;
+            color: white;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            background: var(--gradient);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.1"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-dark);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-dark);
+        }
+
+        /* About Sections */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .section-title p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .team-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .team-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .team-role {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .team-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: var(--gradient);
+            padding: 80px 0;
+            text-align: center;
+            border-radius: var(--border-radius);
+            margin: 50px 0;
+        }
+
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .social-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .section-title h2 {
+                font-size: 28px;
+            }
+
+            .features, .team-members {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .auth-button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-brain"></i>
+                    <span>DeepContact</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Главная</a>
+                    <a href="about.html" class="nav-link active">О нас</a>
+                    <a href="#" class="nav-link">Функции</a>
+                    <a href="#" class="nav-link">Блог</a>
+                    <a href="#" class="nav-link">Контакты</a>
+                </div>
+                <div class="auth-buttons">
+                    <a href="index.html#auth-screen" class="auth-button login-btn">Войти</a>
+                    <a href="index.html#auth-screen" class="auth-button register-btn">Регистрация</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>О DeepContact</h1>
+                <p>Социальная сеть нового поколения, созданная для объединения людей через общение, музыку и общие интересы</p>
+                <div class="hero-buttons">
+                    <a href="index.html#auth-screen" class="btn btn-primary">Присоединиться сейчас</a>
+                    <a href="#features" class="btn btn-secondary">Узнать больше</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Что такое DeepContact?</h2>
+                <p>DeepContact - это инновационная социальная платформа, сочетающая в себе лучшие черты современных социальных сетей с уникальными функциями для творчества и самовыражения.</p>
+            </div>
+            <div class="features" id="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Сообщество</h3>
+                    <p>Присоединяйтесь к растущему сообществу пользователей, находите друзей и единомышленников, делитесь своими мыслями и идеями.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3>Музыка</h3>
+                    <p>Слушайте музыку, создавайте плейлисты, делитесь своими любимыми треками и открывайте новую музыку вместе с друзьями.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Безопасность</h3>
+                    <p>Ваша конфиденциальность - наш приоритет. Мы используем передовые технологии для защиты ваших данных и личной информации.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Наша миссия</h2>
+                <p>Мы стремимся создать цифровое пространство, где каждый может быть собой, находить вдохновение и строить meaningful connections.</p>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Инновации</h3>
+                    <p>Мы постоянно развиваем платформу, внедряя новые функции и технологии для улучшения пользовательского опыта.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Забота о пользователях</h3>
+                    <p>Мы прислушиваемся к вашим отзывам и предложениям, чтобы сделать DeepContact лучше с каждым днем.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Доступность</h3>
+                    <p>Наша платформа доступна на множестве языков и устройств, чтобы каждый мог присоединиться к нашему сообществу.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Наша команда</h2>
+                <p>Небольшая, но преданная команда, работающая над созданием лучшей социальной платформы.</p>
+            </div>
+            <div class="team-members">
+                <div class="team-card">
+                    <div class="team-avatar">К</div>
+                    <h3>квантум</h3>
+                    <div class="team-role">Основатель & Главный разработчик</div>
+                    <p>Страстный разработчик с видением создания инклюзивной социальной платформы для творческих людей.</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">Q</div>
+                    <h3>Кьюсол</h3>
+                    <div class="team-role">Друг-создатель проекта</div>
+                    <p>Помог в разработке концепции и ключевых функций платформы, вдохновляя на создание уникального пользовательского опыта.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="container">
+        <div class="cta">
+            <h2>Присоединяйтесь к нашему сообществу</h2>
+            <p>Начните свой путь в DeepContact сегодня - откройте для себя новых друзей, музыку и вдохновение.</p>
+            <a href="index.html#auth-screen" class="btn btn-primary">Зарегистрироваться бесплатно</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>DeepContact</h3>
+                    <p>Социальная сеть нового поколения для общения, музыки и творчества.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Платформа</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="about.html">О нас</a></li>
+                        <li><a href="#">Функции</a></li>
+                        <li><a href="#">Блог</a></li>
+                        <li><a href="#">Партнеры</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Поддержка</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Сообщество</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">Статус</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Правовая информация</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Условия использования</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Cookie</a></li>
+                        <li><a href="#">Лицензии</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DeepContact. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple theme toggle for demonstration
+        const toggleTheme = () => {
+            document.body.classList.toggle('light-mode');
+        };
+
+        // Add theme toggle button to header for demo purposes
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('header .header-content');
+            const themeToggle = document.createElement('button');
+            themeToggle.className = 'auth-button login-btn';
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            themeToggle.style.marginLeft = '10px';
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            const authButtons = document.querySelector('.auth-buttons');
+            authButtons.appendChild(themeToggle);
+        });
+    </script>
+</body>
+</html>
